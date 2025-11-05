@@ -1,0 +1,51 @@
+{
+  "active_features": [
+    "duration",
+    "protocol_type",
+    "service",
+    "flag",
+    "src_bytes",
+    "dst_bytes",
+    "count",
+    "srv_count",
+    "serror_rate",
+    "srv_serror_rate",
+    "rerror_rate",
+    "srv_rerror_rate",
+    "same_srv_rate",
+    "diff_srv_rate"
+  ],
+  "feature_descriptions": {
+    "duration": "Connection duration in seconds",
+    "protocol_type": "Protocol type (tcp, udp, icmp)",
+    "service": "Network service (http, ftp, smtp, etc.)",
+    "flag": "Connection flag (SF, S0, REJ, etc.)",
+    "src_bytes": "Number of data bytes from source to destination",
+    "dst_bytes": "Number of data bytes from destination to source",
+    "count": "Number of connections to same host in past 2 seconds",
+    "srv_count": "Number of connections to same service in past 2 seconds",
+    "serror_rate": "Percentage of connections with SYN errors",
+    "srv_serror_rate": "Percentage of connections with SYN errors (same service)",
+    "rerror_rate": "Percentage of connections with REJ errors",
+    "srv_rerror_rate": "Percentage of connections with REJ errors (same service)",
+    "same_srv_rate": "Percentage of connections to same service",
+    "diff_srv_rate": "Percentage of connections to different services"
+  },
+  "model": {
+    "algorithm": "random_forest",
+    "n_estimators": 100,
+    "max_depth": 20
+  },
+  "detection": {
+    "threshold": 0.5,
+    "risk_levels": {
+      "low": 0.3,
+      "medium": 0.7
+    }
+  },
+  "application": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": true
+  }
+}

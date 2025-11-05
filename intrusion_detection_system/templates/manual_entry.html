@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Entry - IDS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Manual Feature Entry</h1>
+            <p class="subtitle">Enter network traffic features for intrusion detection</p>
+            <p class="feature-count">Active Features: {{ features|length }}</p>
+            <a href="/" class="back-link">← Back to Home</a>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>ℹ️ Note:</strong> This form shows only the features used in the active detection model. 
+                Fill in the values based on your network traffic data.
+            </div>
+
+            <form action="/predict-manual" method="post" class="manual-form" id="manualForm">
+                <div class="form-sections">
+                    <section class="form-section">
+                        <h3>Active Detection Features</h3>
+                        <div class="form-grid">
+                            {% for feature in features %}
+                            <div class="form-group">
+                                <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
+
+                                {% if feature == 'protocol_type' %}
+                                <select name="{{ feature }}" id="{{ feature }}" required>
+                                    <option value="tcp">TCP</option>
+                                    <option value="udp">UDP</option>
+                                    <option value="icmp">ICMP</option>
+                                </select>
+
+                                {% elif feature == 'service' %}
+                                <select name="{{ feature }}" id="{{ feature }}" required>
+                                    <option value="http">HTTP</option>
+                                    <option value="smtp">SMTP</option>
+                                    <option value="ftp">FTP</option>
+                                    <option value="ssh">SSH</option>
+                                    <option value="telnet">Telnet</option>
+                                    <option value="dns">DNS</option>
+                                    <option value="ftp_data">FTP Data</option>
+                                    <option value="pop_3">POP3</option>
+                                    <option value="other">Other</option>
+                                </select>
+
+                                {% elif feature == 'flag' %}
+                                <select name="{{ feature }}" id="{{ feature }}" required>
+                                    <option value="SF">SF (Normal)</option>
+                                    <option value="S0">S0 (Connection attempt)</option>
+                                    <option value="REJ">REJ (Rejected)</option>
+                                    <option value="RSTR">RSTR (Reset)</option>
+                                    <option value="SH">SH (SYN/FIN)</option>
+                                    <option value="RSTO">RSTO</option>
+                                    <option value="S1">S1</option>
+                                    <option value="S2">S2</option>
+                                </select>
+
+                                {% elif 'rate' in feature %}
+                                <input type="number" name="{{ feature }}" id="{{ feature }}" 
+                                       step="0.01" min="0" max="1" value="0" required>
+
+                                {% elif feature in ['land', 'logged_in', 'is_host_login', 'is_guest_login', 'root_shell', 'su_attempted'] %}
+                                <select name="{{ feature }}" id="{{ feature }}" required>
+                                    <option value="0">No (0)</option>
+                                    <option value="1">Yes (1)</option>
+                                </select>
+
+                                {% else %}
+                                <input type="number" name="{{ feature }}" id="{{ feature }}" 
+                                       step="any" value="0" required>
+                                {% endif %}
+
+                                <small>{{ descriptions.get(feature, 'Network traffic feature') }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">🔍 Detect Intrusion</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    <button type="button" class="btn btn-info" onclick="fillNormalTraffic()">Normal Traffic Sample</button>
+                    <button type="button" class="btn btn-warning" onclick="fillAttackTraffic()">Attack Sample</button>
+                </div>
+            </form>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Intrusion Detection System - Active Features Only</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        function resetForm() {
+            document.getElementById('manualForm').reset();
+        }
+
+        function fillNormalTraffic() {
+            // Fill with sample normal HTTP traffic
+            {% if 'duration' in features %}document.getElementById('duration').value = '0';{% endif %}
+            {% if 'protocol_type' in features %}document.getElementById('protocol_type').value = 'tcp';{% endif %}
+            {% if 'service' in features %}document.getElementById('service').value = 'http';{% endif %}
+            {% if 'flag' in features %}document.getElementById('flag').value = 'SF';{% endif %}
+            {% if 'src_bytes' in features %}document.getElementById('src_bytes').value = '181';{% endif %}
+            {% if 'dst_bytes' in features %}document.getElementById('dst_bytes').value = '5450';{% endif %}
+            {% if 'count' in features %}document.getElementById('count').value = '1';{% endif %}
+            {% if 'srv_count' in features %}document.getElementById('srv_count').value = '1';{% endif %}
+            {% if 'serror_rate' in features %}document.getElementById('serror_rate').value = '0';{% endif %}
+            {% if 'srv_serror_rate' in features %}document.getElementById('srv_serror_rate').value = '0';{% endif %}
+            {% if 'rerror_rate' in features %}document.getElementById('rerror_rate').value = '0';{% endif %}
+            {% if 'srv_rerror_rate' in features %}document.getElementById('srv_rerror_rate').value = '0';{% endif %}
+            {% if 'same_srv_rate' in features %}document.getElementById('same_srv_rate').value = '1';{% endif %}
+            {% if 'diff_srv_rate' in features %}document.getElementById('diff_srv_rate').value = '0';{% endif %}
+            alert('Normal traffic data filled! Click "Detect Intrusion" to analyze.');
+        }
+
+        function fillAttackTraffic() {
+            // Fill with sample suspicious traffic
+            {% if 'duration' in features %}document.getElementById('duration').value = '0';{% endif %}
+            {% if 'protocol_type' in features %}document.getElementById('protocol_type').value = 'tcp';{% endif %}
+            {% if 'service' in features %}document.getElementById('service').value = 'telnet';{% endif %}
+            {% if 'flag' in features %}document.getElementById('flag').value = 'S0';{% endif %}
+            {% if 'src_bytes' in features %}document.getElementById('src_bytes').value = '0';{% endif %}
+            {% if 'dst_bytes' in features %}document.getElementById('dst_bytes').value = '0';{% endif %}
+            {% if 'count' in features %}document.getElementById('count').value = '150';{% endif %}
+            {% if 'srv_count' in features %}document.getElementById('srv_count').value = '25';{% endif %}
+            {% if 'serror_rate' in features %}document.getElementById('serror_rate').value = '1';{% endif %}
+            {% if 'srv_serror_rate' in features %}document.getElementById('srv_serror_rate').value = '1';{% endif %}
+            {% if 'rerror_rate' in features %}document.getElementById('rerror_rate').value = '0';{% endif %}
+            {% if 'srv_rerror_rate' in features %}document.getElementById('srv_rerror_rate').value = '0';{% endif %}
+            {% if 'same_srv_rate' in features %}document.getElementById('same_srv_rate').value = '0.17';{% endif %}
+            {% if 'diff_srv_rate' in features %}document.getElementById('diff_srv_rate').value = '0.03';{% endif %}
+            alert('Attack traffic data filled! Click "Detect Intrusion" to analyze.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+QUICK START - DYNAMIC FEATURES
+================================
+
+1. unzip intrusion_detection_system_updated.zip
+2. cd intrusion_detection_system
+3. pip install -r requirements.txt
+4. python extract_features.py data/your_data.csv label  # Or skip for defaults
+5. python train_model.py
+6. python app.py
+7. Open http://localhost:5000
+
+The form shows ONLY your active features!
+
+See README.md for full documentation.

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intrusion Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Intrusion Detection System</h1>
+            <p class="subtitle">Advanced Network Security Analysis with Manual Entry Detection</p>
+            <p class="feature-info">✨ Configured with {{ feature_count }} active features</p>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>🎯 New:</strong> The manual entry form shows ONLY the features used in your active detection model!
+            </div>
+
+            <div class="options-container">
+                <div class="option-card">
+                    <div class="icon">📝</div>
+                    <h2>Manual Entry Detection</h2>
+                    <p>Enter network traffic features manually for real-time intrusion detection</p>
+                    <p class="feature-badge">{{ feature_count }} features</p>
+                    <a href="/manual-entry" class="btn btn-primary">Enter Features</a>
+                </div>
+
+                <div class="option-card">
+                    <div class="icon">📊</div>
+                    <h2>Batch Upload</h2>
+                    <p>Upload a CSV file with multiple network connections for bulk detection</p>
+                    <form action="/predict-batch" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" accept=".csv" required class="file-input">
+                        <button type="submit" class="btn btn-secondary">Upload & Analyze</button>
+                    </form>
+                </div>
+
+                <div class="option-card">
+                    <div class="icon">📈</div>
+                    <h2>Detection History</h2>
+                    <p>View past detection results and analysis history</p>
+                    <a href="/history" class="btn btn-info" target="_blank">View History</a>
+                </div>
+            </div>
+
+            <section class="features">
+                <h3>System Capabilities</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <strong>🎯 Dynamic Features</strong>
+                        <p>Adapts to your model's active features</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>⚡ Real-time Analysis</strong>
+                        <p>Instant results with confidence scores</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>📊 Detailed Insights</strong>
+                        <p>Risk levels and feature importance</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>🔌 API Access</strong>
+                        <p>RESTful API for system integration</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Intrusion Detection System | Dynamic Feature Configuration</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

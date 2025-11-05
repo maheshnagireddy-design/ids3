@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Results - IDS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Detection Results</h1>
+            <a href="/" class="back-link">← Back to Home</a>
+        </header>
+
+        <main>
+            {% if method == 'manual' %}
+            <div class="results-container">
+                <div class="result-card {% if result.prediction == 1 %}attack{% else %}normal{% endif %}">
+                    <h2>Detection Result</h2>
+                    <div class="prediction-label">
+                        {% if result.prediction == 1 %}
+                        <span class="status-badge attack">⚠️ ATTACK DETECTED</span>
+                        {% else %}
+                        <span class="status-badge normal">✅ NORMAL TRAFFIC</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <strong>Confidence:</strong>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: {{ result.confidence }}%"></div>
+                            </div>
+                            <span>{{ "%.2f"|format(result.confidence) }}%</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <strong>Risk Level:</strong>
+                            <span class="risk-badge {{ result.risk_level.lower() }}">{{ result.risk_level }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <strong>Features Used:</strong>
+                            <span class="feature-count-badge">{{ result.features_used }} features</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <strong>Probability Breakdown:</strong>
+                            <ul class="probability-list">
+                                <li>Normal: {{ "%.2f"|format(result.probabilities.normal) }}%</li>
+                                <li>Attack: {{ "%.2f"|format(result.probabilities.attack) }}%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {% if result.top_features %}
+                <div class="result-card">
+                    <h3>Top Contributing Features</h3>
+                    <div class="feature-importance">
+                        {% for feature, importance in result.top_features %}
+                        <div class="feature-bar">
+                            <span class="feature-name">{{ feature }}</span>
+                            <div class="importance-bar">
+                                <div class="importance-fill" style="width: {{ (importance * 100)|int }}%"></div>
+                            </div>
+                            <span class="importance-value">{{ "%.3f"|format(importance) }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="result-card">
+                    <h3>Input Features Summary</h3>
+                    <div class="features-summary">
+                        {% for key, value in features.items() %}
+                        <div class="feature-item">
+                            <strong>{{ key }}:</strong> {{ value }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            {% elif method == 'batch' %}
+            <div class="results-container">
+                <div class="result-card">
+                    <h2>Batch Analysis Results</h2>
+                    <div class="batch-stats">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ result.total }}</div>
+                            <div class="stat-label">Total Samples</div>
+                        </div>
+                        <div class="stat-box normal">
+                            <div class="stat-number">{{ result.normal }}</div>
+                            <div class="stat-label">Normal Traffic</div>
+                        </div>
+                        <div class="stat-box attack">
+                            <div class="stat-number">{{ result.attack }}</div>
+                            <div class="stat-label">Attacks Detected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="actions">
+                <a href="/manual-entry" class="btn btn-primary">Analyze Another</a>
+                <a href="/" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Intrusion Detection System</p>
+        </footer>
+    </div>
+</body>
+</html>
